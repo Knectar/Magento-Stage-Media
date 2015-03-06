@@ -1,2 +1,3 @@
 modules/Knectar_StageMedia.xml app/etc/modules/Knectar_StageMedia.xml
+Mage/Core/Model/File/Storage/Database.php app/code/local/Mage/Core/Model/File/Storage/Database.php
 StageMedia app/code/community/Knectar/StageMedia
