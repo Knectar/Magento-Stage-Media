@@ -116,7 +116,12 @@ class Mage_Core_Model_File_Storage_Database extends Mage_Core_Model_File_Storage
     {
         $filename = basename($filePath);
         $path = dirname($filePath);
-        $this->_getResource()->loadByFilename($this, $filename, $path);
+        try {
+            $this->_getResource()->loadByFilename($this, $filename, $path);
+        }
+        catch (Zend_Db_Exception $e) {
+            // Ignore missing table otherwise next step could not happen
+        }
 
 /// Knectar_StageMedia: fallback to origin server ///
 // cannot use own module for this because get.php limits to Mage_Core only
