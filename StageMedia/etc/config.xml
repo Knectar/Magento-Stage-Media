@@ -34,7 +34,7 @@
 
     <modules>
         <Knectar_StageMedia>
-            <version>0.1.0</version>
+            <version>0.0.0</version>
         </Knectar_StageMedia>
     </modules>
 
@@ -51,6 +51,13 @@
             	</rewrite>
             </catalog>
         </models>
+        <resources>
+            <knectarstagemedia>
+                <setup>
+                    <module>Knectar_StageMedia</module>
+                </setup>
+            </knectarstagemedia>
+        </resources>
     </global>
 
 </config>

@@ -6,7 +6,9 @@ Magento-Stage-Media
 Instead of duplicating the "media" directory of an installation for development,
 Stage Media only downloads public files as they are needed.
 This saves space and time.
-To activate go to the admin section "System > Configuration > System > Storage Configuration for Media" and enter a "Remote URL".
+
+Stage Media will attempt to auto-configure on installation and use the base media URL as the source.
+For better control see "System > Configuration > System > Storage Configuration for Media > Remote URL" in admin.
 
 Stage Media is potentially slow and should only be used on private servers.
 Currently only these files are handled automatically:
