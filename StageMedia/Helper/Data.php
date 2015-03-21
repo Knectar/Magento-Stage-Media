@@ -18,7 +18,7 @@ class Knectar_StageMedia_Helper_Data extends Mage_Core_Helper_Data
         return $tree;
     }
 
-    private function _bestScope(Mage_Core_Model_Config_Data $old, Mage_Core_Model_Config_Data $new)
+    private function _bestScope($old, Mage_Core_Model_Config_Data $new)
     {
         $store = Mage::app()->getStore();
         if ($store->getWebsite() === false) {
