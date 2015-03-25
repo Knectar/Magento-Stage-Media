@@ -77,8 +77,8 @@ class Knectar_StageMedia_Model_Product_Image extends Mage_Catalog_Model_Product_
             // download to original filename
             // TODO use established HTTP client which doesn't depend on allow_url_fopen
             @mkdir(dirname($filename), 0777, true);
-            if ($localfile = fopen($filename, 'w')) {
-                if ($remotefile = fopen($remotepath, 'r')) {
+            if ($localfile = @fopen($filename, 'w')) {
+                if ($remotefile = @fopen($remotepath, 'r')) {
                     stream_copy_to_stream($remotefile, $localfile);
                     $success = true;
 
@@ -93,7 +93,7 @@ class Knectar_StageMedia_Model_Product_Image extends Mage_Catalog_Model_Product_
                 if (! $success) {
                     // file is truncated by fopen, if unsuccessful it is now useless
                     // TODO only overwrite file is successful
-                    unlink($localpath);
+                    @unlink($localpath);
                 }
             }
             else {
