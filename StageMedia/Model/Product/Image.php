@@ -65,7 +65,6 @@ class Knectar_StageMedia_Model_Product_Image extends Mage_Catalog_Model_Product_
      */
     protected function _downloadRemote($filename)
     {
-        Mage::log(__METHOD__."({$filename})", Zend_Log::DEBUG);
         if (! $this->_hasRemoteUrl()) return false;
 
         $success = false;
@@ -124,8 +123,6 @@ class Knectar_StageMedia_Model_Product_Image extends Mage_Catalog_Model_Product_
      */
     protected function _remoteUrl($localpath)
     {
-        Mage::log(__METHOD__."({$localpath})", Zend_Log::DEBUG);
-
         $baseurl = rtrim(Mage::getStoreConfig(self::REMOTE_URL_CONFIG_PATH), DS);
         $localpath = ltrim($localpath, DS);
         return $baseurl . DS . $localpath;
