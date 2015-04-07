@@ -77,27 +77,24 @@ class Knectar_StageMedia_Model_Product_Image extends Mage_Catalog_Model_Product_
             // download to original filename
             // TODO use established HTTP client which doesn't depend on allow_url_fopen
             @mkdir(dirname($filename), 0777, true);
-            if ($localfile = @fopen($filename, 'w')) {
-                if ($remotefile = @fopen($remotepath, 'r')) {
-                    stream_copy_to_stream($remotefile, $localfile);
-                    $success = true;
+            if ((file_exists($filename) && !is_writable($filename)) || !is_writable(dirname($filename))) {
+                Mage::log("Unable to write to '{$filename}'", Zend_Log::ERR);
+            }
+            elseif ($remotefile = @fopen($remotepath, 'r')) {
+                // safe way to write in a shared setting
+                $localfile = fopen($filename, 'c');
+                flock($localfile, LOCK_EX);
+                ftruncate($localfile, 0);
+                stream_copy_to_stream($remotefile, $localfile);
+                $success = true;
 
-                    fclose($remotefile);
-                }
-                else {
-                    // TODO throw exception so it can be logged in exception.log, might require try..finally which requires PHP 5.5
-                    Mage::log("Unable to reach '{$remotepath}'", Zend_Log::ERR);
-                }
-
+                flock($localfile, LOCK_UN);
+                fclose($remotefile);
                 fclose($localfile);
-                if (! $success) {
-                    // file is truncated by fopen, if unsuccessful it is now useless
-                    // TODO only overwrite file is successful
-                    @unlink($localpath);
-                }
             }
             else {
-                Mage::log("Unable to write to '{$filename}'", Zend_Log::ERR);
+                // TODO throw exception so it can be logged in exception.log, might require try..finally which requires PHP 5.5
+                Mage::log("Unable to reach '{$remotepath}'", Zend_Log::ERR);
             }
         }
         return $success;
