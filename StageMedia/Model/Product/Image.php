@@ -71,30 +71,10 @@ class Knectar_StageMedia_Model_Product_Image extends Mage_Catalog_Model_Product_
         $basepath = Mage::getConfig()->getBaseDir('media') . DS;
         if (preg_match('#^'.preg_quote($basepath).'(.*)$#', $filename, $result)) {
             list(,$localpath) = $result;
-            $remotepath = $this->_remoteUrl($localpath);
-            Mage::log("Downloading '{$remotepath}'", Zend_Log::INFO);
-
-            // download to original filename
-            // TODO use established HTTP client which doesn't depend on allow_url_fopen
-            @mkdir(dirname($filename), 0777, true);
-            if ((file_exists($filename) && !is_writable($filename)) || !is_writable(dirname($filename))) {
-                Mage::log("Unable to write to '{$filename}'", Zend_Log::ERR);
-            }
-            elseif ($remotefile = @fopen($remotepath, 'r')) {
-                // safe way to write in a shared setting
-                $localfile = fopen($filename, 'c');
-                flock($localfile, LOCK_EX);
-                ftruncate($localfile, 0);
-                stream_copy_to_stream($remotefile, $localfile);
-                $success = true;
-
-                flock($localfile, LOCK_UN);
-                fclose($remotefile);
-                fclose($localfile);
-            }
-            else {
-                // TODO throw exception so it can be logged in exception.log, might require try..finally which requires PHP 5.5
-                Mage::log("Unable to reach '{$remotepath}'", Zend_Log::ERR);
+            $remoteUrl = Mage::getStoreConfig(self::REMOTE_URL_CONFIG_PATH);
+            $localDir = Mage::getBaseDir(Mage_Core_Model_Store::URL_TYPE_MEDIA);
+            if ($remoteUrl && $localDir) {
+                (new Knectar_Filecache_Remote($remoteUrl, $localDir))->fetch($localpath);
             }
         }
         return $success;
@@ -110,18 +90,5 @@ class Knectar_StageMedia_Model_Product_Image extends Mage_Catalog_Model_Product_
     protected function _hasRemoteUrl()
     {
         return Mage::getStoreConfigFlag(self::REMOTE_URL_CONFIG_PATH);
-    }
-
-    /**
-     * Format suitable URL relative to specified remote dir.
-     *
-     * @param string $localpath
-     * @return string
-     */
-    protected function _remoteUrl($localpath)
-    {
-        $baseurl = rtrim(Mage::getStoreConfig(self::REMOTE_URL_CONFIG_PATH), DS);
-        $localpath = ltrim($localpath, DS);
-        return $baseurl . DS . $localpath;
     }
 }

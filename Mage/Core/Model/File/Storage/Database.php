@@ -127,11 +127,9 @@ class Mage_Core_Model_File_Storage_Database extends Mage_Core_Model_File_Storage
 // cannot use own module for this because get.php limits to Mage_Core only
         if (! $this->getId()) {
             $remoteUrl = Mage::getStoreConfig('system/media_storage_configuration/remote_url');
-            if ($remoteUrl) {
-                $remotePath = rtrim($remoteUrl, DS) . DS . ltrim($filePath, DS);
-                Mage::log("Downloading {$remotePath}", Zend_Log::INFO);
-                $this->setContent(file_get_contents($remotePath));
-                $this->setId(-1); // pretend this exists
+            $localDir = Mage::getBaseDir(Mage_Core_Model_Store::URL_TYPE_MEDIA);
+            if ($remoteUrl && $localDir) {
+                (new Knectar_Filecache_Remote($remoteUrl, $localDir))->fetch($filePath);
             }
         }
         return $this;

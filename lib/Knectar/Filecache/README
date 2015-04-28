@@ -1,0 +1,4 @@
+Filecache temporarily stores files, it does not store temporary data in files like Zend_Cache_Backend_File.
+
+Here temporary files are listed in a simple text file and purged by their atime or mtime.
+Indigenous files are safe from deletion.
