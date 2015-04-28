@@ -36,6 +36,7 @@ class Knectar_StageMedia_Model_Cron
     {
         $localDir = Mage::getBaseDir(Mage_Core_Model_Store::URL_TYPE_MEDIA);
         // null because there will be no fetch now
-        (new Knectar_Filecache_Remote(null, $localDir))->purge();
+        $location = new Knectar_Filecache_Remote(null, $localDir);
+        $location->purge();
     }
 }

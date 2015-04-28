@@ -129,7 +129,8 @@ class Mage_Core_Model_File_Storage_Database extends Mage_Core_Model_File_Storage
             $remoteUrl = Mage::getStoreConfig('system/media_storage_configuration/remote_url');
             $localDir = Mage::getBaseDir(Mage_Core_Model_Store::URL_TYPE_MEDIA);
             if ($remoteUrl && $localDir) {
-                (new Knectar_Filecache_Remote($remoteUrl, $localDir))->fetch($filePath);
+                $server = new Knectar_Filecache_Remote($remoteUrl, $localDir);
+                $server->fetch($filePath);
             }
         }
         return $this;

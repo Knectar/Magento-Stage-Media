@@ -74,7 +74,8 @@ class Knectar_StageMedia_Model_Product_Image extends Mage_Catalog_Model_Product_
             $remoteUrl = Mage::getStoreConfig(self::REMOTE_URL_CONFIG_PATH);
             $localDir = Mage::getBaseDir(Mage_Core_Model_Store::URL_TYPE_MEDIA);
             if ($remoteUrl && $localDir) {
-                (new Knectar_Filecache_Remote($remoteUrl, $localDir))->fetch($localpath);
+                $server = new Knectar_Filecache_Remote($remoteUrl, $localDir);
+                $server->fetch($localpath);
             }
         }
         return $success;
