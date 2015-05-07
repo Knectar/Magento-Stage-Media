@@ -68,14 +68,20 @@ class Knectar_StageMedia_Model_Product_Image extends Mage_Catalog_Model_Product_
         if (! $this->_hasRemoteUrl()) return false;
 
         $success = false;
-        $basepath = Mage::getConfig()->getBaseDir('media') . DS;
-        if (preg_match('#^'.preg_quote($basepath).'(.*)$#', $filename, $result)) {
+        $localDir = Mage::getBaseDir(Mage_Core_Model_Store::URL_TYPE_MEDIA);
+        if (preg_match('#^'.preg_quote($localDir).'(.*)$#', $filename, $result)) {
             list(,$localpath) = $result;
             $remoteUrl = Mage::getStoreConfig(self::REMOTE_URL_CONFIG_PATH);
-            $localDir = Mage::getBaseDir(Mage_Core_Model_Store::URL_TYPE_MEDIA);
             if ($remoteUrl && $localDir) {
-                $server = new Knectar_Filecache_Remote($remoteUrl, $localDir);
-                $server->fetch($localpath);
+                try {
+                    $server = new Knectar_Filecache_Remote($remoteUrl, $localDir);
+                    $server->fetch($localpath);
+                    $success = file_exists($filename);
+                } catch (Exception $e) {
+                    // do not interrupt page
+                    // if remote file is missing there is nothing to do anyway
+                    Mage::logException($e);
+                }
             }
         }
         return $success;

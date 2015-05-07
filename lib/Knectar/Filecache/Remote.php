@@ -32,7 +32,19 @@
 class Knectar_Filecache_Remote
 {
 
+    /**
+     * @var Knectar_Filecache_Index
+     */
+    protected $index;
+
+    /**
+     * @var string
+     */
     protected $source;
+
+    /**
+     * @var string
+     */
     protected $destination;
 
     public function __construct($source, $destination)
@@ -56,6 +68,14 @@ class Knectar_Filecache_Remote
             throw new RuntimeException($destination . ' cannot be overwritten.');
         }
 
+        // check if it has been tried previously
+        if ($this->index->in_array($filename)) {
+            return;
+        }
+        // mark as attempted
+        // if file is not written next it won't be attmpted until after next purge (24hrs?)
+        $this->index->append($filename);
+
         $destinationDir = dirname($destination);
         @mkdir($destinationDir, 0777, true);
         if (! is_writable($destinationDir)) {
@@ -76,7 +96,7 @@ class Knectar_Filecache_Remote
         stream_copy_to_stream($sourceFile, $tempfile);
         fclose($sourceFile);
         fclose($tempfile);
-        rename($tempname, $destination) && chmod($destination, 0777) && $this->index->append($filename);
+        rename($tempname, $destination) && chmod($destination, 0777);
     }
 
     /**

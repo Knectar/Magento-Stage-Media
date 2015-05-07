@@ -76,4 +76,9 @@ class Knectar_Filecache_Index extends ArrayObject
         $this->isDirty = true;
         return parent::offsetUnset($index);
     }
+
+    public function in_array($needle, $strict = false)
+    {
+        return in_array($needle, (array) $this, $strict);
+    }
 }
